@@ -1,14 +1,8 @@
 <template>
     <div 
-        class="relative bg-[#263040] rounded shadow p-4 resize-box cursor-pointer"
-        :style="{ 
-            width: width + 'px', 
-            height: height + 'px', 
-            left: position.x + 'px', 
-            top: position.y + 'px',
-            position: 'absolute' 
-        }" 
+        class="absolute bg-[#263040] rounded shadow p-4 resize-box cursor-pointer"
         @mousedown="startDrag"
+    
     >
         <PolarArea ref="chartRef" :data="chartData" :options="chartOptions" />
         <div class=" absolute -bottom-2 right-0 cursor-se-resize" @mouseenter="$event => resize_if = true"  @mouseleave="$event => resize_if = false"   @mousedown.prevent="startResize">
@@ -26,6 +20,7 @@
     import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, ArcElement,CategoryScale, LinearScale ,RadialLinearScale} from 'chart.js'
 
     ChartJS.register(Title, Tooltip, Legend, BarElement,ArcElement, CategoryScale, LinearScale,RadialLinearScale)
+    const emit = defineEmits(['dragging', 'close-chart'])
 
     const chartRef = ref(null)
     const width = ref(500)
@@ -91,52 +86,72 @@
     }
 
     let startX = 0, startY = 0, startW = 0, startH = 0
-    const startResize = (e) => {
-        startX = e.clientX
-        startY = e.clientY
-        startW = width.value
-        startH = height.value
 
-        window.addEventListener('mousemove', resize)
-        window.addEventListener('mouseup', stopResize)
+
+const startResize = (e) => {
+    startX = e.clientX
+    startY = e.clientY
+    startW = width.value
+    startH = height.value
+
+    window.addEventListener('mousemove', resize)
+    window.addEventListener('mouseup', stopResize)
+}
+
+const resize = (e) => {
+    const dx = e.clientX - startX
+    const dy = e.clientY - startY
+    width.value = Math.max(200, startW + dx)
+    height.value = Math.max(200, startH + dy)
+    emitSizeUpdate()
+}
+
+const stopResize = () => {
+    window.removeEventListener('mousemove', resize)
+    window.removeEventListener('mouseup', stopResize)
+}
+
+let startDragX = 0, startDragY = 0
+const startDrag = (e) => {
+    if (!resize_if.value) { 
+        startDragX = e.clientX - position.value.x
+        startDragY = e.clientY - position.value.y
+
+        window.addEventListener('mousemove', drag)
+        window.addEventListener('mouseup', stopDrag)
     }
+}
 
-    const resize = (e) => {
-        const dx = e.clientX - startX
-        const dy = e.clientY - startY
-        width.value = Math.max(200, startW + dx)
-        height.value = Math.max(200, startH + dy)
+const drag = (e) => {
+    position.value.x = e.clientX - startDragX
+    position.value.y = e.clientY - startDragY
+    emitPositionUpdate()
+}
+
+const stopDrag = () => {
+    window.removeEventListener('mousemove', drag)
+    window.removeEventListener('mouseup', stopDrag)
+}
+
+const emitPositionUpdate = () => {
+    const newPosition = { x: position.value.x, y: position.value.y }
+    emit('dragging', newPosition)  // Use the emit function
+}
+
+const emitSizeUpdate = () => {
+    const newSize = { height: height.value, width: width.value}
+    emit('resize', newSize) 
+}
+
+
+
+const closeChart = () => {
+    emit('close-chart')
+}
+
+watch([width, height], () => {
+    if (chartRef.value?.chart) {
+        chartRef.value.chart.resize()
     }
-
-    const stopResize = () => {
-        window.removeEventListener('mousemove', resize)
-        window.removeEventListener('mouseup', stopResize)
-    }
-
-    let startDragX = 0, startDragY = 0
-    const startDrag = (e) => {
-        if (resize_if.value == false) {
-            startDragX = e.clientX - position.value.x
-            startDragY = e.clientY - position.value.y
-    
-            window.addEventListener('mousemove', drag)
-            window.addEventListener('mouseup', stopDrag)
-        }
-    }
-
-    const drag = (e) => {
-        position.value.x = e.clientX - startDragX
-        position.value.y = e.clientY - startDragY
-    }
-
-    const stopDrag = () => {
-        window.removeEventListener('mousemove', drag)
-        window.removeEventListener('mouseup', stopDrag)
-    }
-
-    watch([width, height], () => {
-        if (chartRef.value?.chart) {
-            chartRef.value.chart.resize()
-        }
-    })
+})
 </script>

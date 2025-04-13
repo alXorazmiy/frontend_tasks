@@ -1,9 +1,25 @@
+
 <template>
     <div 
         class="absolute bg-[#263040] rounded shadow p-4 resize-box cursor-pointer"
         @mousedown="startDrag"
-    >
-        <Line ref="chartRef" :data="chartData" :options="chartOptions" />
+    >   
+        <div v-if="fileDisplay">
+            <img 
+                :src="fileDisplay" 
+                class="object-cover rounded" 
+                :style="{ width: width + 'px', height: height - 40 + 'px' }" 
+            />
+        </div>
+        <div v-else  class="flex flex-col justify-center items-center h-full border border-dashed">
+                <Icon name = "material-symbols:imagesmode-outline"  size = "100" class = "text-white" />
+            <span class = "mt-10 text-gray-500 w-[70%] text-center">You can only upload images in jpg, png, jpeg formats.</span>
+            <label for="fileInput" class = "cursor-pointer">
+                <div class="px-2 py-1 5 mt-8 text-white text-center rounded-sm text-[15px] bg-[#f02c56] w-[120px]">Select file</div>
+                <input type="file" ref="file" id="fileInput" hidden  @change="onFileChange">
+            </label>
+        </div>
+        
         <div class="absolute -bottom-2 right-0 cursor-se-resize" @mouseenter="resize_if = true" @mouseleave="resize_if = false" @mousedown.prevent="startResize">
             <Icon name="mdi:resize-bottom-right" class="text-white" size="30" />
         </div>
@@ -15,56 +31,17 @@
 
 <script setup>
 import { ref, watch } from 'vue'
-import { Line } from 'vue-chartjs'
-import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale } from 'chart.js'
-
-// Register chart.js components
-ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale)
-
-// Define emits
 const emit = defineEmits(['dragging', 'close-chart'])
+let file = ref(null)
+let fileDisplay = ref(null)
+const width = ref(500) 
+const height = ref(400) 
+const position = ref({ x: 0, y: 0 }) 
+let resize_if = ref(false)  
 
-const chartRef = ref(null)
-const width = ref(500)  // Initial width
-const height = ref(300) // Initial height
-const position = ref({ x: 0, y: 0 }) // Initial position
-const resize_if = ref(false)  // To'ldirish: resize area hover flag
 
-const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sem', 'Oct', 'Nov', 'Dec']
-const dataValues = Array.from({ length: 12 }, () => Math.floor(Math.random() * 20) + 1) // Generate random data
-
-const chartData = {
-    labels,
-    datasets: [{
-        label: '',
-        data: dataValues,
-        borderColor: '#42A5F5',
-        fill: true, 
-        backgroundColor: 'transparent',
-        tension: 0.4
-    }]
-}
-
-const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-        legend: { display: true }
-    },
-    scales: {
-        y: {
-            ticks: { display: false },
-            grid: { display: false }
-        },
-        x: {
-            grid: { display: false },
-            ticks: { color: 'white' }
-        }
-    }
-}
-
-// Resizing functionality
 let startX = 0, startY = 0, startW = 0, startH = 0
+
 
 const startResize = (e) => {
     startX = e.clientX
@@ -81,6 +58,7 @@ const resize = (e) => {
     const dy = e.clientY - startY
     width.value = Math.max(200, startW + dx)
     height.value = Math.max(200, startH + dy)
+    emitSizeUpdate()
 }
 
 const stopResize = () => {
@@ -88,11 +66,9 @@ const stopResize = () => {
     window.removeEventListener('mouseup', stopResize)
 }
 
-// Drag functionality
 let startDragX = 0, startDragY = 0
-
 const startDrag = (e) => {
-    if (resize_if.value === false) {  // Only drag when not hovering over resize area
+    if (!resize_if.value) { 
         startDragX = e.clientX - position.value.x
         startDragY = e.clientY - position.value.y
 
@@ -114,17 +90,30 @@ const stopDrag = () => {
 
 const emitPositionUpdate = () => {
     const newPosition = { x: position.value.x, y: position.value.y }
-    emit('dragging', newPosition)  // Emit the updated position
+    emit('dragging', newPosition)  // Use the emit function
 }
+
+const emitSizeUpdate = () => {
+    const newSize = { height: height.value, width: width.value}
+    emit('resize', newSize) 
+}
+
+
 
 const closeChart = () => {
-    emit('close-chart')  // Emit close chart event
+    emit('close-chart')
 }
 
-// Watch for changes in chart width and height, and resize chart accordingly
-watch([width, height], () => {
-    if (chartRef.value?.chart) {
-        chartRef.value.chart.resize()
-    }
-})
+
+const onFileChange = (e) => {
+    console.log("hello")
+    const selectedFile = e.target.files[0]
+    if (!selectedFile) return
+    file.value = selectedFile
+    fileDisplay.value = URL.createObjectURL(selectedFile)
+    console.log(fileDisplay.value)
+}
+
 </script>
+
+
