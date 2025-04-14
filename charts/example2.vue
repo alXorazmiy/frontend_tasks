@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
     <div 
       class="absolute bg-[#263040] rounded shadow p-4 resize-box cursor-pointer"
       @mousedown="startDrag"
@@ -157,4 +157,4 @@
     }
   })
   </script>
-  
+   -->

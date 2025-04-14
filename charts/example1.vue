@@ -1,41 +1,27 @@
-<template>
+<!-- <template>
     <div>
         <Navbar @open-modal="showModal = true" />
         <div class="w-full h-[100vh] bg-[#1d2633] pt-[80px] overflow-y-scroll">
             <div class="mt-2">
-                <div class="relative" v-for="(chart, index) in Charts_list" :key="chart.id">
-                    <div v-if="chart.warning"
-                         class="absolute z-10 bg-[#f02c5663]"
-                         :style="{
-                             top: chart.position.y - 20 + 'px',
-                             left: chart.position.x - 20 + 'px',
-                             height: chart.size.height + 40 + 'px',
-                             width: chart.size.width + 40 + 'px'
-                         }">
-                    </div>
 
+                <div class="relative" v-for="(chart, index) in Charts_list" >
+                    <div v-if="chart.warning"  class="absolute z-100 bg-[#f02c5663]" :style="{ top: chart.position.y  -20  + 'px', left: chart.position.x - 20 + 'px', height: chart.size.height + 40 + 'px', width: chart.size.width + 40 + 'px', zIndex:100}"></div>
                     <component 
-                        :is="getChartComponent(chart.type)"
-                        :style="{
-                            top: chart.position.y + 'px',
-                            left: chart.position.x + 'px',
-                            height: chart.size.height + 'px',
-                            width: chart.size.width + 'px',
-                            zIndex: chart.id
-                        }"
-                        :position="chart.position"
+                        :key="chart.id" 
+                        :is="getChartComponent(chart.type)" 
+                        :style="{ top: chart.position.y  + 'px', left: chart.position.x  + 'px', height: chart.size.height  + 'px', width: chart.size.width  + 'px', zIndex: chart.id}"
+                        :position = "chart.position"
                         @close-chart="closeChart(chart.id)"
                         @dragging="updatePosition(chart.id, $event)"
                         @resize="emitSizeUpdate(chart.id, $event)"
                     />
                 </div>
+
+                
             </div>
         </div>
-
-
-        <div v-if="showModal"
-             class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
-             @click.self="showModal = false">
+        
+        <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50" @click.self="showModal = false">
             <div class="bg-[#263040] rounded p-6 w-80">
                 <h2 class="text-lg font-semibold mb-4 text-white">Select a chart to add</h2>
                 <ul class="space-y-2">
@@ -55,18 +41,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref } from 'vue'
 import Navbar from "@/components/Navbar.vue"
-import BarChart from "@/components/dashboard/BarChart.vue"
-import LineChart from "@/components/dashboard/LineChart.vue"
-import PieChart from "@/components/dashboard/PieChart.vue"
-import RadarChart from "@/components/dashboard/RadarChart.vue"
-import PolarAreaChart from "@/components/dashboard/PolarAreaChart.vue"
-import Image from "@/components/dashboard/Image.vue"
+import BarChart from  "@/components/dashboard/BarChart.vue"
+import LineChart from  "@/components/dashboard/LineChart.vue"
+import PieChart from  "@/components/dashboard/PieChart.vue"
+import RadarChart from  "@/components/dashboard/RadarChart.vue"
+import PolarAreaChart from  "@/components/dashboard/PolarAreaChart.vue"
+import Image from  "@/components/dashboard/Image.vue"
 
 let showModal = ref(false)
-
-
 const Charts_list = ref([])
 
 let chartId = 0
@@ -86,28 +70,36 @@ const getChartComponent = (type) => {
 const screenWidth = ref(0)
 
 const handleResize = () => {
-    const oldWidth = screenWidth.value
-    const newWidth = window.innerWidth
-    screenWidth.value = newWidth
-    const scale = newWidth / oldWidth
-    Charts_list.value.forEach(chart => {
-        chart.size.width = Math.max(200, chart.size.width * scale)
-        chart.position.x = Math.min(chart.position.x * scale, newWidth - chart.size.width)
-        console.log(chart.position)
-    })
+  const oldWidth = screenWidth.value
+  const newWidth = window.innerWidth
+  screenWidth.value = newWidth
+  const scale = newWidth / oldWidth
+  Charts_list.value.forEach(chart => {
+    chart.size.width = Math.max(200, chart.size.width * scale)
+    chart.position.x = Math.min(chart.position.x * scale, newWidth - chart.size.width)
+  })
 }
 
 onMounted(() => {
-    screenWidth.value = window.innerWidth
+  if (typeof window !== 'undefined') {
+    screenWidth.value = window.innerWidth // Set initial screen width
     window.addEventListener('resize', handleResize)
+  }
 })
 
 onBeforeUnmount(() => {
+  if (typeof window !== 'undefined') {
     window.removeEventListener('resize', handleResize)
+  }
 })
 
+
+
 const addChart = async (type) => {
-    const lastChartBottomEdge = Math.max(0,...Charts_list.value.map(chart => chart.position.y + chart.size.height))
+    const lastChartBottomEdge = Math.max(
+        0,
+        ...Charts_list.value.map(chart => chart.position.y + chart.size.height)
+    )
 
     const newX = 10
     const newY = lastChartBottomEdge + 50
@@ -118,15 +110,18 @@ const addChart = async (type) => {
         position: { x: newX, y: newY },
         size: { height: 400, width: 500 },
         zIndex: 1,
-        warning: false,
-        enableTransition: false
+        warning: false
     })
+    
 
     showModal.value = false
 
     await nextTick()
     const container = document.querySelector('.overflow-y-scroll')
-    container?.scrollTo({top: container.scrollHeight,behavior: 'smooth'})
+    container?.scrollTo({
+        top: container.scrollHeight,
+        behavior: 'smooth'
+    })
 }
 
 const closeChart = (id) => {
@@ -139,16 +134,26 @@ const updatePosition = (id, newPosition) => {
     const screenWidth = window.innerWidth
     const screenHeight = window.innerHeight
 
+    const isColliding = (a, b) => {
+        return (
+            a.x < b.x + b.width &&
+            a.x + a.width > b.x &&
+            a.y < b.y + b.height &&
+            a.y + a.height > b.y
+        )
+    }
+
     newPosition.x = Math.max(0, Math.min(newPosition.x, screenWidth - chart.size.width))
     newPosition.y = Math.max(0, Math.min(newPosition.y, screenHeight - chart.size.height))
 
     for (let i = 0; i < Charts_list.value.length; i++) {
         const item = Charts_list.value[i]
         if (chart.id !== item.id) {
-            if (isColliding({ x: newPosition.x - 20, y: newPosition.y - 20, width: chart.size.width + 40, height: chart.size.height + 40 },{ x: item.position.x, y: item.position.y, width: item.size.width, height: item.size.height })) {
+            if (isColliding({ x: newPosition.x - 20 , y: newPosition.y - 20, width: chart.size.width + 40, height: chart.size.height + 40 },{ x: item.position.x, y: item.position.y, width: item.size.width, height: item.size.height })) {
                 item.warning = true
-                return
-            } else {
+                return 
+            }
+            else {
                 item.warning = false
             }
         }
@@ -159,14 +164,6 @@ const updatePosition = (id, newPosition) => {
     }
 }
 
-const isColliding = (a, b) => {
-    return (
-        a.x < b.x + b.width &&
-        a.x + a.width > b.x &&
-        a.y < b.y + b.height &&
-        a.y + a.height > b.y
-    )
-}
 const emitSizeUpdate = (id, newSize) => {
     const chart = Charts_list.value.find(chart => chart.id === id)
     if (!chart) return
@@ -202,7 +199,7 @@ const emitSizeUpdate = (id, newSize) => {
 
             if (isColliding) {
                 item.warning = true
-                return
+                return 
             } else {
                 item.warning = false
             }
@@ -211,5 +208,7 @@ const emitSizeUpdate = (id, newSize) => {
 
     chart.size = newSize
 }
-</script>
 
+
+</script>
+ -->
