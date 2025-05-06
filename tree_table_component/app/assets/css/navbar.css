@@ -1,0 +1,73 @@
+@import url(base.css);
+
+
+.navbar {
+    position: fixed;
+    z-index: 10;
+    width: 100%;
+    height: 80px;
+    top: 0;
+    left: 0;
+    box-shadow: var(--box-shadow);
+    background-color: var(--color-white);
+}
+
+
+.navbar .navbar-items {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar .navbar-items  .logo img{
+    width: 80px;
+    height: 80px;
+}
+
+.navbar .navbar-items .links a {
+    color: var(--color-dark);
+    font-weight: 500;
+    text-decoration: none;
+    margin: 0 2rem ;
+    padding: 1rem 2rem;
+    border-radius: var(--border-radius-1);
+}
+
+
+.navbar .navbar-items .actions .theme-box {
+    background-color: var(--color-background);
+    width: 60px;
+    height: 30px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.navbar .navbar-items .actions .darkmode {
+    justify-content: end;
+}
+
+
+
+.navbar .navbar-items .actions .theme-box .icon-background {
+    background-color: var(--color-white);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 3px;
+}
+.navbar .navbar-items .actions .theme-box .icon-background .moon {
+    width: 20px;
+    height: 20px;
+    color: var(--color-dark);
+}
+.navbar .navbar-items .actions .theme-box .icon-background .sun {
+    width: 20px;
+    height: 20px;
+    color: var(--color-warning);
+    background-color: var(--color-warning);
+}
