@@ -1,6 +1,7 @@
-
+@import url(base.css);
 
 .container{
     width: 1240px;
     margin: auto;
+    color: var(--color-dark);
 }

@@ -10,8 +10,8 @@
             </div>
             <div class = "links" >
                 <NuxtLink to="/" >Tree</NuxtLink>
-                <NuxtLink to="/" >Table</NuxtLink>
-                <NuxtLink to="/" >Camera</NuxtLink>
+                <NuxtLink to="/table" >Table</NuxtLink>
+                <NuxtLink to="/camera" >Camera</NuxtLink>
             </div>
             <div class = "actions" >
                 <div class="theme" @click = "setTheme">  

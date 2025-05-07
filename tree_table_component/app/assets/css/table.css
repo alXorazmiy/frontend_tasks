@@ -1,0 +1,183 @@
+@import url(base.css);
+
+
+.table {
+    background-color: var(--color-secondary);
+    box-shadow: var(--box-shadow);
+    padding: 2rem;
+
+}
+
+.table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+
+th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid var(--info-dark);
+  }
+
+.table thead {
+    border-bottom: 1px solid var(--color-info-dark);
+}
+
+
+.table tbody tr {
+    border-bottom: 1px solid var(--color-info-dark);
+    height: 50px;
+}   
+.table tbody tr:hover {
+    background-color: #ffffff32;
+}
+
+.table .table-tags {
+    display: flex;
+}
+
+.table .name {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+
+.table .table-tags .nice {
+    border: 1px solid var(--color-success);
+    border-radius: var(--border-radius-1);
+    color: var(--color-success);
+    background-color: #1b9c841b;
+    padding: 3px 5px;
+    margin-right: 1rem;
+    font-weight: 500;
+}
+
+.table .table-tags .loser {
+    border: 1px solid var(--color-danger);
+    border-radius: var(--border-radius-1);
+    color: var(--color-danger);
+    background-color: #ff00621c;
+    padding: 3px 5px;
+    margin-right: 1rem;
+    font-weight: 500;
+}
+
+
+.table .table-tags .teacher {
+    border: 1px solid var(--color-warning);
+    border-radius: var(--border-radius-1);
+    color: var(--color-warning);
+    background-color: #f7d1601b;
+    padding: 3px 5px;
+    margin-right: 1rem;
+    font-weight: 500;
+}
+
+.table .table-tags .developer {
+    border: 1px solid var(--color-primary);
+    border-radius: var(--border-radius-1);
+    color: var(--color-primary);
+    background-color: #2081f01b;
+    padding: 3px 5px;
+    margin-right: 1rem;
+    font-weight: 500;
+}
+
+
+
+.table .actions {
+    display: flex;
+    color: var(--color-primary);
+}
+
+.table .actions .name {
+    width: 70%;
+}
+
+.table .actions .delete {
+    width: 15%;
+    position: relative;
+}
+
+
+
+.table .actions .delete .pop-confirm {
+    position: absolute;
+    width: 200px;
+    background-color: var(--color-background);
+    z-index: 5;
+    padding: 1rem;
+    top: -95px;
+    left: -120px;
+    border-radius: var(--border-radius-1);
+    color: var(--color-dark);
+    text-align: center;
+    box-shadow: var(--box-shadow);
+}
+
+.table .actions .delete .pop-confirm .buttons {
+    display: flex;
+    justify-content: end;
+    margin-top: 10px;
+}
+
+.table .actions .delete .pop-confirm .buttons button:nth-child(1) {
+    background-color: var(--color-secondary);
+    border: none;
+    color: var(--color-dark);
+    border-radius: var(--border-radius-1);
+    padding: 4px 6px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+.table .actions .delete .pop-confirm .buttons button:nth-child(2) {
+    background-color: var(--color-danger);
+    border: none;
+    color: white;
+    border-radius:  var(--border-radius-1);
+    padding: 4px 6px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+
+
+.table .actions .more-actions {
+    width: 15%;
+}
+
+.table .actions .delete .trash-box {
+    color: var(--color-danger);
+    font-size: 20px !important;
+    cursor: pointer;
+
+}
+
+.table .actions .more-actions .dots {
+    color: var(--color-dark);
+    font-size: 20px !important;
+    cursor: pointer;
+}
+
+
+.table .table-footer {
+    display: flex;
+    justify-content: end;
+    margin-top: 50px;
+}
+
+.table .table-footer .pagination button {
+    border: none;
+    background-color: transparent;
+    width: 24px;
+    height: 24px;
+    color: var(--color-dark);
+    cursor: pointer;
+}
+
+.current-page {
+    background-color: var(--color-primary) !important;
+    color: white !important;
+    border-radius: var(--border-radius-1);
+}

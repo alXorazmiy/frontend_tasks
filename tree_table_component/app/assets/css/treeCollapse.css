@@ -1,0 +1,71 @@
+@import url(base.css);
+
+.tree-collapse {
+    max-width: 400px;
+    background-color: var(--color-white);
+    position: relative;
+}
+
+
+
+.tree-label {
+    width: 100%;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+}
+
+
+.tree-label .tree-item {
+    padding-left: 1rem; 
+    display: flex;
+    align-items: center;
+    position: absolute;
+    z-index: 4;
+}
+
+.tree-label .tree-item .icon {
+    font-size: 22px !important;
+    padding-right: 1rem;
+}
+
+.tree-label .indicator {
+    position: absolute;
+    z-index: 3;
+    height: 100%;
+    width: 7px;
+    background-color: var(--color-success);
+    display: none;
+}
+
+
+.tree-label .background {
+    position: absolute;
+    z-index: 2;
+    height: 100%;
+    width: 400px;
+    background-color: var(--hover-color);
+    display: none;
+}
+
+
+.tree-label:hover .background{
+    display: block;
+}
+
+
+.tree-label:hover .indicator {
+    display: block;
+}
+
+.tree-label .open {
+    rotate: 90deg !important;
+}
+
+.tree-children {
+    padding-left: 1.5em;
+    position: relative;
+  }

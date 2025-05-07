@@ -31,6 +31,9 @@ export default defineNuxtConfig(
           "./assets/css/base.css",
           "./assets/css/main.css",
           "./assets/css/navbar.css",
+          "./assets/css/treeCollapse.css",
+          "./assets/css/table.css",
+          "./assets/css/camera.css",
       ],
 
       modules: ["@nuxt/icon"]

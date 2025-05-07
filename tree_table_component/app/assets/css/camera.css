@@ -1,0 +1,42 @@
+@import url(base.css);
+
+
+
+.camera {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+}
+
+.camera video {
+    height: 100vh;
+}
+
+
+.camera-button {
+    position: fixed;
+    z-index: 10;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 2px solid white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: white;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.camera-button .circle {
+    width: 40px;
+    height: 40px;
+    background-color: white;
+    border-radius: 50%;
+    cursor: pointer;
+}
